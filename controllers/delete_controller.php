@@ -1,12 +1,7 @@
 <?php
-
-require_once '../helpers/show_error.php';
-show_error();
-
-/* navbar */
 require '../views/navbar.view.php';
-// require_once(realpath($_SERVER["DOCUMENT_ROOT"]) .'/encuesta/helpers/info_db.php');
-require_once(realpath($_SERVER["DOCUMENT_ROOT"]) .'/encuesta/database/db.php');
+// require_once(realpath($_SERVER["DOCUMENT_ROOT"]) .'/encuesta/database/db.php'); original
+require '../database/db.php';
 
 $conexion = conexion();
 if(!$conexion){

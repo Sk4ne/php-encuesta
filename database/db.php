@@ -1,8 +1,9 @@
 <?php 
 
-  require_once '../helpers/show_error.php';
-  show_error(); 
-  require_once(realpath($_SERVER["DOCUMENT_ROOT"]) .'/encuesta/helpers/info_db.php');
+  // require_once '../helpers/show_error.php'; POR ALGUNA EXTRANA RAZON TENGO PROBLEMAS PARA REQUERIR LOS ARCHIVOS.
+  
+  
+  require_once(realpath($_SERVER["DOCUMENT_ROOT"]) .'/encuesta/helpers/config.php');
   function conexion(){
         try {
           $host = HOST;

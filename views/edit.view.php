@@ -1,9 +1,4 @@
 <?php 
-
-
-  require_once '../helpers/show_error.php';
-  show_error();
-
   require 'header.view.php';
   
 ?>
@@ -15,7 +10,6 @@
         <input type="hidden" value="<?php echo $encuesta['idEncuesta']?>" name='id' class='form-control'> 
         <div class="form-group">
           <label for="Titulo Encusta" class="font-weight-bold">TITULO ENCUESTA</label>
-          <!-- <input type="hidden" value="<?php echo $encuesta['idEncuesta']?>" name='id' class='form-control'>  -->
           <input type="text" name="titulo_encuesta" value="<?php echo $encuesta['tituloEncuesta']?>" class="mt-2 form-control"/>
         </div>
         <div class="form-group">
@@ -26,9 +20,7 @@
          <label for="Respuesta Pregunta" class="font-weight-bold">RESPUESTA PREGUNTA</label>
           <textarea name="respuesta_pregunta" rows="5" class="form-control" ><?php echo $encuesta['respuestaPregunta']?></textarea>
         </div>
-        <!-- <button class="btn btn-outline-secondary">EDITAR</button> -->
         <input type="submit" class="btn btn-outline-secondary" value="Editar"> 
-        <!-- <input type="submit" class="btn btn-outline-secondary" value="Cancelar">  -->
         <a href="<?php echo URI;?>/views/answer.view.php" type='submit' class="btn btn-outline-secondary" value=''>Cancelar</a>
       </form>
     </div>

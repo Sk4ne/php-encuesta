@@ -1,27 +1,16 @@
 <?php 
 
-  require_once '../helpers/show_error.php';
-  show_error();
-  // require './database/db.php'; ORIGINAL
-  // require_once './helpers/info_db.php'; NO ES NECESARIO
-  // require './helpers/info_db.php';  GENERAR UN ERROR NO SE CUAL SEA
-  require $_SERVER['DOCUMENT_ROOT']. '/encuesta/helpers/info_db.php';
-  // echo require_once __DIR__ . '/helpers/info_db.php';
-  // $test = URI . '/helpers/info_db.php';
-
-  // echo $test;
-
-  require RUTA.'/encuesta/database/db.php';
-  /* navbar */
-  require 'navbar.view.php';
-  require 'header.view.php';
+  require_once __DIR__.'/../helpers/config.php';
+  require_once __DIR__.'/../database/db.php';
+  require_once 'navbar.view.php';
+  require_once 'header.view.php';
 
   $conexion = conexion();
    if(!$conexion){
       header('Location: views/error.php');
    }
-  
-  // $info = new Datos();
+
+
   $error='';
   if(isset($_POST['submit'])){
     $title_survey = $_POST['title'];
@@ -54,16 +43,14 @@
       header('Location: answer.view.php');
     }
   }
-   
-
-
-    
+  $type_answer = array('PREGUNTA_MULTIPLE','PREGUNTA_ABIERTA');
+  
 ?>
 
-  <div class="container">
+  <div class="container padre">
     <div class="mt-4 row">
       <div class="offset-3 col-md-6">
-        <h1 class='text-center'>Generador de encuestas</h1>
+        <h1 class='text-center' id='generador'>Generador de encuestas</h1>
         <hr>
         <form action="<?php $_SERVER['PHP_SELF'];?>" method='POST'>
           <div class="form-group">
@@ -78,16 +65,17 @@
               <input type="text" name="title_question" placeholder="Titulo Pregunta" class="form-control">
             </div>
             <div class="col">
-              <select name="type_question" class="form-control">
-                <option value="" disabled>Choose..</option>
-                <option value="PREGUNTA_ABIERTA">PREGUNTA ABIERTA</option>
-                <!-- <option value="">PREGUNTA MULTIPLE</option> -->
+              <select name="type_question" class="form-control"  id='answer_option' onchange='mostrarTextArea()'>
+                <option value='0'>Choose...</option> 
+                <?php foreach($type_answer as $answer) :?> 
+                  <option value="<?php echo $answer ?>"><?php echo $answer?></option>
+                <?php endforeach; ?>  
               </select>
             </div>
           </div>
           <!-- </SUB - FORM> -->
           <div class="mt-4 form-group">
-            <textarea name="answer_question" placeholder="Escribe Tu Respuesta" rows="5" class='form-control'></textarea>
+            <textarea name="answer_question" id='answer_question' placeholder="Escribe Tu Respuesta" rows="5" class='form-control'></textarea>
           </div>  
           <!-- MENSAJES: CREACION DE LA PREGUNTA EXITOSA O FALLO... -->
           <?php if (!empty($error)): ?>
@@ -97,13 +85,14 @@
           <?php endif ?>
           <!-- </MENSAJES: CREACION DE LA PREGUNTA EXITOSA O FALLO... -->
           <!-- submit - button -->
-          <button type='submit' class='mt-4 btn btn-outline-secondary' name='submit'>Guardar</button>
+          <button type='submit' class='mt-4 btn btn-outline-secondary' name='submit' id='button_submit'>Guardar</button>
         </form>
-
-        
       </div>
     </div>
   </div>
+  <!-- SCRIPT -->
+  <script src='<?php echo URL.'/js/showHide.js'?>'></script>
+  <!-- /SCRIPT -->
  <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous"></script>
 </body>

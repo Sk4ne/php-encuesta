@@ -1,15 +1,11 @@
 <?php 
 
-  require_once '../helpers/show_error.php'; 
-  show_error();
-
-
-  /* navbar */
-  require 'navbar.view.php';
-  require 'header.view.php';
-  // include_once('../helpers/info_db.php');
-  require_once(realpath($_SERVER["DOCUMENT_ROOT"]) .'/encuesta/helpers/info_db.php');
-  require RUTA.'/encuesta/database/db.php';
+  require_once 'navbar.view.php';
+  require_once 'header.view.php';
+  // require_once '../helpers/config.php';
+  require_once __DIR__.'/../helpers/config.php';
+  // require URI.'/database/db.php';
+  require __DIR__.'/../database/db.php';
 
   $conexion = conexion();
    if(!$conexion){
@@ -18,6 +14,7 @@
   $encuestas = $conexion->query('SELECT * FROM encuesta');
   $encuestas->execute();
 ?>
+
  <div class="container">
    <div class="mt-4 row">
      <div class="offset-2 col-md-8">
@@ -37,6 +34,7 @@
             <!-- BUTTON ELIMINAR -->
             <a href='../controllers/delete_controller.php?id=<?php echo $encuesta['idEncuesta']?>' class='btn btn-outline-secondary' >Eliminar</a>
             <!-- BUTTON ELIMINAR -->
+            <a href="../download.php?id=<?php echo $encuesta['idEncuesta']?>" class='btn btn-outline-secondary'>Descargar</a>
            </div>
          </div>
        <?php endforeach; ?>
@@ -44,3 +42,7 @@
      </div>
    </div>
  </div>
+ <!-- js bootstrap -->
+ <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+ <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous"></script>
+ <!-- /js bootstrap -->
