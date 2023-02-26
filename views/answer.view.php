@@ -11,29 +11,35 @@
    if(!$conexion){
       header('Location: error.php');
    }
-  $encuestas = $conexion->query('SELECT * FROM encuesta');
+  // $encuestas = $conexion->query('SELECT * FROM encuesta'); ORIGINAL
+  $encuestas = $conexion->prepare('SELECT * FROM encuesta');
   $encuestas->execute();
+  
+  $data = [];
+
+  foreach ($encuestas as $enc) {
+    $data[] = $enc; 
+  }
+
+  // $sonIguales = count(array_unique($data)) === 1;
+  // var_dump($sonIguales);
 ?>
 
  <div class="container">
    <div class="mt-4 row">
      <div class="offset-2 col-md-8">
        <h2 class="text-center">Listado de encuestas</h2>
-       <?php foreach ($encuestas as $encuesta): ?>
-         <div class="mt-2 card listado-encuestas" >
+       
+       <?php foreach ($data as $encuesta): ?>
+          <div class="mt-2 card listado-encuestas" >
            <div class="card-body">
             <h2 class="card-title text-center"><?php echo $encuesta['tituloEncuesta']?></h2>
             <p class='card-text'><?php echo $encuesta['descripcionEncuesta']?></p>
             <h4 class="card-title"><?php echo $encuesta['tituloPregunta']?></h4>
             <p class='card-text'><?php echo $encuesta['respuestaPregunta']?></p>
 
-            <!-- BUTTON EDITAR -->
             <a href="../controllers/edit_controller.php?id=<?php echo $encuesta['idEncuesta']?>" class='btn btn-outline-secondary'>Editar</a>
-            <!-- /BUTTON EDITAR -->
-
-            <!-- BUTTON ELIMINAR -->
             <a href='../controllers/delete_controller.php?id=<?php echo $encuesta['idEncuesta']?>' class='btn btn-outline-secondary' >Eliminar</a>
-            <!-- BUTTON ELIMINAR -->
             <a href="../download.php?id=<?php echo $encuesta['idEncuesta']?>" class='btn btn-outline-secondary'>Descargar</a>
            </div>
          </div>
