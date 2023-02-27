@@ -1,47 +1,13 @@
 
 function mostrarTextArea(){
-  let selectNone = document.getElementById('answer_option').value;
-  console.log(selectNone);
+  let typeQuestion = document.getElementById('answer_option').value;
   let textArea = document.getElementById('answer_question');
-
-  if(selectNone == 'PREGUNTA_MULTIPLE'){
-    textArea.style.display='none';
+  if (typeQuestion == 'PREGUNTA_MULTIPLE') {
+    textArea.style.display = 'none';
+  } else if(typeQuestion == 'PREGUNTA_ABIERTA'){
+    textArea.style.display = 'block';
+    textArea.setAttribute('disabled','');
   }else{
-    textArea.style.display='block';
+    textArea.style.display = 'none';
   }
 }
-
-
-let encuestas = [
-  {
-    idEncuesta:1,
-    tituloEncuesta: "titlea",
-    descripcionEncuesta: "descripciona",
-    tituloPregunta:"tituloPreguntaA",
-    tipoPregunta:"PREGUNTA_ABIERTA",
-    respuestaPregunta:"",
-    codigoReferencia:"XTS",
-    fecha:"2023-02-25 14:19:01",
-  },{
-    idEncuesta:2,
-    tituloEncuesta: "titlea",
-    descripcionEncuesta: "descripcionb",
-    tituloPregunta:"tituloPreguntaA",
-    tipoPregunta:"PREGUNTA_ABIERTA",
-    respuestaPregunta:"",
-    codigoReferencia:"XTS",
-    fecha:"2023-02-25 14:19:01",
-  },{
-    idEncuesta:3,
-    tituloEncuesta: "titlea",
-    descripcionEncuesta: "descripcionac",
-    tituloPregunta:"tituloPreguntaA",
-    tipoPregunta:"PREGUNTA_ABIERTA",
-    respuestaPregunta:"",
-    codigoReferencia:"XTS",
-    fecha:"2023-02-25 14:19:01",
-  }
-]
-encuestas.forEach(element => {
-  console.log(element.tituloEncuesta)
-});

@@ -32,30 +32,12 @@
     if($type_question[0] == 'Choose'){
       $error.= 'POR FAVOR ESCOJA UN TIPO DE PREGUNTA VALIDO <br/>';
     };
-    // echo "<script>
-    //   alert('HOLA MUNDO DESDE PHP JS' + $answerQuestion);
-    // </script>";
 
     if(empty($error)){
-     
-    /* codigo original */
-    //   $sql = $conexion->prepare('INSERT INTO encuesta VALUES(NULL,:title_survey,:description,:title_question,:type_question,:answer_question,CURRENT_TIMESTAMP)');
-    //   $sql->execute(array(
-    //     ':title_survey'=> $title_survey,
-    //     ':description'=> $description,
-    //     ':title_question'=> $title_question,
-    //     ':type_question'=> $type_question,
-    //     ':answer_question'=> $answer_question
-    //   ));
-    //   header('Location: answer.view.php');
-    // }
-  /* </codigooriginal> */
-       
-    function codAleatorio($length = 5) {
-      return substr(str_shuffle(str_repeat($x='0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ', ceil($length/strlen($x)) )),1,$length);
-    }
-    $codigo_referencia  = codAleatorio();
-
+      function codAleatorio($length = 5) {
+        return substr(str_shuffle(str_repeat($x='0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ', ceil($length/strlen($x)) )),1,$length);
+      }
+      $codigo_referencia  = codAleatorio();
       for ($i=0; $i <count($type_question); $i++) { 
         $sql = $conexion->prepare('INSERT INTO encuesta VALUES(NULL,:title_survey,:description,:title_question,:type_question,:answer_question,:codigo_referencia,CURRENT_TIMESTAMP)');
           $sql->execute(array(
@@ -71,7 +53,6 @@
     }
   }
   $type_answer = array('PREGUNTA_MULTIPLE','PREGUNTA_ABIERTA');
-  
 ?>
 
   <div class="container">
@@ -128,7 +109,8 @@
       
       <div class="col-md-3">
       <br><br><br><br><br><br><br><br><br><br><br><br>
-        <button class="btn btn-outline-secondary" onclick='createElements()'>+</button>
+        <!-- <button class="btn btn-outline-secondary" onclick='createElements()' id='createEl'>+</button> -->
+        <button class="btn btn-outline-secondary"  id='createElements'>+</button>
       </div>
       <!-- </BUTTON ADD -->
 
@@ -136,13 +118,17 @@
   </div>
 
   <script>
-    const createElements = () =>{
+    let botonCrear = document.getElementById('createElements');
+    botonCrear.addEventListener('click',e =>{
+
+      e.preventDefault();
+      
       let padre = document.querySelector('#fatherContainer');
       let inp1 = document.createElement('div');
       inp1.innerHTML = /* html */`
       <div class="row">
         <div class="col">
-          <input type="text" name="title_question[]" class='form-control' placeholder='TITULO PREGUNTA'>
+          <input type="text" name="title_question[]" class='form-control' placeholder='TITULO PREGUNTA' id='tituloP'>
         </div>
         <div class="col">
           <select name="type_question[]" class='form-control' id='answer_option' onchange='mostrarTextArea()'>
@@ -155,7 +141,6 @@
       <div class="mt-4 form-group">
         <textarea name="answer_question[]" id='answer_question' placeholder="Escribe Tu Respuesta" rows="5" class='form-control'></textarea>
       </div>
-      <!--<button class='btn btn-outline-secondary' onclick='eliminar(this)'>ELIMINAR</button>-->
       <button class='btn btn-outline-secondary' onclick='eliminar(this)'>
         <span class="material-icons">
           delete_forever
@@ -165,7 +150,11 @@
       `;
       /* AGREGAMOS LOS ELEMENTOS AL DIV CONTENEDOR */
       padre.appendChild(inp1);
-    }
+    });
+
+    // const createElements = () =>{
+
+    // }
 
     const eliminar = (e) =>{
       let contenedor = document.querySelector('#fatherContainer');
@@ -173,28 +162,6 @@
       // console.log(e.parentNode.nodeName);
       contenedor.removeChild(divPadre);
     }
-    const ocultarMostrarTextArea = () => {
-      let typeQuestion = document.getElementById('answer_option').value;
-      let textArea = document.getElementById('answer_question');
-      if(typeQuestion == 'Choose' || typeQuestion == 'PREGUNTA_ABIERTA'){
-        // textArea.setAttribute('name','xt');
-        textArea.setAttribute('disabled','');
-      }
-    }
-    ocultarMostrarTextArea();
-
-
-    // function mostrarTextArea(){
-    //   let selectNone = document.getElementById('answer_option').value;
-    //   console.log(selectNone);
-    //   let textArea = document.getElementById('answer_question');
-
-    //   if(selectNone == 'PREGUNTA_MULTIPLE'){
-    //     textArea.style.display='none';
-    //   }else{
-    //     textArea.style.display='block';
-    //   }
-    // }
 
   </script>
 
