@@ -1,5 +1,4 @@
 <?php 
-  // error_reporting(0);
   require_once __DIR__.'/../helpers/config.php';
   require_once __DIR__.'/../database/db.php';
   require_once 'navbar.view.php';
@@ -9,17 +8,14 @@
    if(!$conexion){
       header('Location: views/error.php');
    }
-
-  $paintElement='';
   $error='';
   if(isset($_POST['submit'])){
     $title_survey = $_POST['title'];
     $description = $_POST['description'];
     $title_question = $_POST['title_question'];
     $type_question = $_POST['type_question'];
-    // $answer_question = "0" || $_POST['answer_question'];  SE CAMBIO POR LA LINEA QUE ESTA a continuacion.
     $answer_question = isset($_POST['answer_question']) ? $_POST['answer_question']: "";
-
+    print_r($answer_question);
     if (empty($title_survey)) {
       $error.= ' POR FAVOR INGRESE EL TITULO DE LA ENCUESTA <br/>';
     } 
@@ -33,12 +29,14 @@
       $error.= 'POR FAVOR ESCOJA UN TIPO DE PREGUNTA VALIDO <br/>';
     };
 
+    $allTitles = [];
+
     if(empty($error)){
       function codAleatorio($length = 5) {
         return substr(str_shuffle(str_repeat($x='0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ', ceil($length/strlen($x)) )),1,$length);
       }
       $codigo_referencia  = codAleatorio();
-      for ($i=0; $i <count($type_question); $i++) { 
+      for ($i=0; $i <count($title_question); $i++) { 
         $sql = $conexion->prepare('INSERT INTO encuesta VALUES(NULL,:title_survey,:description,:title_question,:type_question,:answer_question,:codigo_referencia,CURRENT_TIMESTAMP)');
           $sql->execute(array(
             ':title_survey'=> $title_survey,
@@ -48,18 +46,17 @@
             ':codigo_referencia'=>$codigo_referencia,
             ':answer_question'=> $answer_question[$i]
           ));
-          header('Location: answer.view.php');
+          $ruta = URL;
+          header("Location: $ruta/views/answer.view.php");
       }
     }
   }
-  $type_answer = array('PREGUNTA_MULTIPLE','PREGUNTA_ABIERTA');
+  $type_answer = array('Choose','PREGUNTA_MULTIPLE','PREGUNTA_ABIERTA');
 ?>
 
   <div class="container">
     <div class="mt-4 row">
-      <div class="col-md-3"></div>
-      <!-- <div class="offset-3 col-md-6" style='background-color:#aaa '> -->
-      <div class="col-md-6">
+      <div class="offset-3 col-md-6">
         <h1 class='text-center' id='generador'>Generador de encuestas</h1>
         <hr>
         <form action="<?php $_SERVER['PHP_SELF'];?>" method='POST'>
@@ -72,103 +69,43 @@
           <!-- SUB - FORM -->
           <div class="row">
             <div class="col">
-              <input type="text" name="title_question[]" placeholder="Titulo Pregunta" class="form-control">
+              <input type="text" name="title_question[]" placeholder="Titulo Pregunta" class="form-control" autocomplete="off" id='titleQuestion'>
             </div>
             <div class="col">
-              <select name="type_question[]" class="form-control"  id='answer_option' onchange='mostrarTextArea()'>
-                <option value="Choose">Choose ...</option>
-                <option value="PREGUNTA_MULTIPLE">PREGUNTA_MULTIPLE</option>
-                <option value="PREGUNTA_ABIERTA">PREGUNTA_ABIERTA</option> 
+              <select name="type_question[]" class="select_option form-control"  id='answer_option' onchange='showHide()'>
+                <?php foreach ($type_answer as $answer):?>
+                  <option value="<?php echo $answer ?>"><?php echo $answer?></option>
+                <?php endforeach;?>
               </select>
             </div>
           </div>
           <!-- </SUB - FORM> -->
           <div class="mt-4 form-group">
-            <textarea name="answer_question[]" id='answer_question' placeholder="Escribe Tu Respuesta" rows="5" class='form-control'></textarea>
+            <textarea name="answer_question[]" id='answer_question' placeholder="Escribe Tu Respuesta" rows="5" class='answer_question form-control'></textarea>
           </div>  
-          <!-- </PINTAR LOS INPUTS OBLIGATORIOS -->
+
+           <!-- ESTE DIV CONTIENE LOS ELEMENTOS HTML CREADOS DINAMICAMENTE -->
+           <div class="form-group" id='fatherContainer'></div>
+         
           <!-- MENSAJES: CREACION DE LA PREGUNTA EXITOSA O FALLO... -->
           <?php if (!empty($error)): ?>
             <div class='text-center p-3 mb-2 bg-danger text-white'>
               <?php echo $error;?>
             </div>
           <?php endif ?>
-          <!-- </MENSAJES: CREACION DE LA PREGUNTA EXITOSA O FALLO... -->
 
-          <!-- ESTE DIV CONTIENE LOS ELEMENTOS HTML CREADOS DINAMICAMENTE -->
-          <div class="form-group" id='fatherContainer'></div>
-          <!-- </ESTE DIV CONTIENE LOS ELEMENTOS HTML CREADOS DINAMICAMENTE -->
-          <!-- submit - button -->
-          <button type='submit' class='mt-4 btn btn-outline-secondary' name='submit' id='button_submit'>Guardar</button>
+          <button type='submit' class='mt-4 btn btn-outline-secondary' name='submit' id='button_submit' >Guardar</button>
+
           <br><br><br><br>
         </form>
-
-
       </div>
-      <!-- BUTTON ADD -->
-      
       <div class="col-md-3">
       <br><br><br><br><br><br><br><br><br><br><br><br>
-        <!-- <button class="btn btn-outline-secondary" onclick='createElements()' id='createEl'>+</button> -->
         <button class="btn btn-outline-secondary"  id='createElements'>+</button>
       </div>
-      <!-- </BUTTON ADD -->
-
     </div> <!-- </PRIMER FILA -->
   </div>
-
-  <script>
-    let botonCrear = document.getElementById('createElements');
-    botonCrear.addEventListener('click',e =>{
-
-      e.preventDefault();
-      
-      let padre = document.querySelector('#fatherContainer');
-      let inp1 = document.createElement('div');
-      inp1.innerHTML = /* html */`
-      <div class="row">
-        <div class="col">
-          <input type="text" name="title_question[]" class='form-control' placeholder='TITULO PREGUNTA' id='tituloP'>
-        </div>
-        <div class="col">
-          <select name="type_question[]" class='form-control' id='answer_option' onchange='mostrarTextArea()'>
-            <option value="Choose">Choose ...</option>
-            <option value="PREGUNTA_MULTIPLE">PREGUNTA_MULTIPLE</option>
-            <option value="PREGUNTA_ABIERTA">PREGUNTA_ABIERTA</option>
-          </select>
-        </div>
-      </div>
-      <div class="mt-4 form-group">
-        <textarea name="answer_question[]" id='answer_question' placeholder="Escribe Tu Respuesta" rows="5" class='form-control'></textarea>
-      </div>
-      <button class='btn btn-outline-secondary' onclick='eliminar(this)'>
-        <span class="material-icons">
-          delete_forever
-        </span>
-      </button>
-      <hr/>
-      `;
-      /* AGREGAMOS LOS ELEMENTOS AL DIV CONTENEDOR */
-      padre.appendChild(inp1);
-    });
-
-    // const createElements = () =>{
-
-    // }
-
-    const eliminar = (e) =>{
-      let contenedor = document.querySelector('#fatherContainer');
-      let divPadre = e.parentNode;
-      // console.log(e.parentNode.nodeName);
-      contenedor.removeChild(divPadre);
-    }
-
-  </script>
-
-  <!-- SCRIPT -->
   <script src='<?php echo URL.'/js/showHide.js'?>'></script>
-  <!-- /SCRIPT -->
-  
  <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous"></script>
 </body>
