@@ -24,7 +24,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 
 
   $sql = $conexion->prepare(
-    'UPDATE encuesta SET tituloEncuesta = :titulo, tituloPregunta = :titulo_pregunta,respuestaPregunta = :respuesta_pregunta WHERE idEncuesta = :id' 
+    'UPDATE encuestas SET tituloEncuesta = :titulo, tituloPregunta = :titulo_pregunta,respuestaPregunta = :respuesta_pregunta WHERE idEncuesta = :id' 
   );
 
   $sql->execute(array(
@@ -43,7 +43,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
   if(empty($id_encuesta)){
     header('Location: ../views/answer.view.php');
   }
-  $encuesta = $conexion->query("SELECT * FROM encuesta WHERE idEncuesta = $id_encuesta");
+  $encuesta = $conexion->query("SELECT * FROM encuestas WHERE idEncuesta = $id_encuesta");
   $encuesta = $encuesta->fetchAll();
   
   if(!$encuesta){

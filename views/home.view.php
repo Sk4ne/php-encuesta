@@ -37,7 +37,7 @@
       }
       $codigo_referencia  = codAleatorio();
       for ($i=0; $i <count($title_question); $i++) { 
-        $sql = $conexion->prepare('INSERT INTO encuesta VALUES(NULL,:title_survey,:description,:title_question,:type_question,:answer_question,:codigo_referencia,CURRENT_TIMESTAMP)');
+        $sql = $conexion->prepare('INSERT INTO encuestas VALUES(NULL,:title_survey,:description,:title_question,:type_question,:answer_question,:codigo_referencia,CURRENT_TIMESTAMP)');
           $sql->execute(array(
             ':title_survey'=> $title_survey,
             ':description'=> $description,
@@ -56,7 +56,9 @@
 
   <div class="container">
     <div class="mt-4 row">
-      <div class="offset-3 col-md-6">
+      <!-- <div class="offset-3 col-md-6"> -->
+      <div class="col-sm-12 col-md-3"></div>
+      <div class="col-sm-12 col-md-6">
         <h1 class='text-center' id='generador'>Generador de encuestas</h1>
         <hr>
         <form action="<?php $_SERVER['PHP_SELF'];?>" method='POST'>
@@ -84,6 +86,20 @@
             <textarea name="answer_question[]" id='answer_question' placeholder="Escribe Tu Respuesta" rows="5" class='answer_question form-control'></textarea>
           </div>  
 
+          <!-- EN ESTA SECCION VA LAS PREGUNTAS OPCION MULTIPLE -->
+           <div class="form-check">
+             <input type="radio" class="form-check-input" name='inputRadio' value="1">
+             <label for="" class="form-check-label">RTA A</label>
+            </div> 
+            <div class="form-check">
+             <input type="radio" class="form-check-input" name='inputRadio' value="2">
+             <label for="" class="form-check-label">RTA B</label>
+            </div>
+            <div class="form-check">
+             <input type="radio" class="form-check-input" name='inputRadio' value="3">
+             <label for="" class="form-check-label">RTA C</label>
+            </div>       
+          <!-- </EN ESTA SECCION VA LAS PREGUNTAS OPCION MULTIPLE -->
            <!-- ESTE DIV CONTIENE LOS ELEMENTOS HTML CREADOS DINAMICAMENTE -->
            <div class="form-group" id='fatherContainer'></div>
          
@@ -99,9 +115,9 @@
           <br><br><br><br>
         </form>
       </div>
-      <div class="col-md-3">
-      <br><br><br><br><br><br><br><br><br><br><br><br>
-        <button class="btn btn-outline-secondary"  id='createElements'>+</button>
+      <div class="col-sm-12 col-md-3">
+      <!-- <br><br><br><br><br><br><br><br><br><br><br><br> -->
+        <button class="btn btn-outline-secondary" id='createElements'>+</button>
       </div>
     </div> <!-- </PRIMER FILA -->
   </div>

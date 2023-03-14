@@ -13,7 +13,7 @@ if(!$id_encuesta){
   header('Location: ../views/answer.view.php');
 }
 
-$sql = $conexion->prepare('DELETE FROM encuesta WHERE idEncuesta =:id');
+$sql = $conexion->prepare('DELETE FROM encuestas WHERE idEncuesta =:id');
 $sql->execute(array('id' => $id_encuesta));
 
 

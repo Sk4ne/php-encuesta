@@ -65,3 +65,6 @@ let botonCrear = document.getElementById('createElements');
       let divPadre = e.parentNode;
       contenedor.removeChild(divPadre);
     }
+
+
+      
