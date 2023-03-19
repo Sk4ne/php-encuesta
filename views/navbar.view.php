@@ -18,13 +18,22 @@
         <ul class="navbar-nav ml-auto">
           <!-- <li class="nav-item active"> -->
           <li class="nav-item">
-            <a class="nav-link active" id='changeStyle' href="<?php echo URL;?>/views/home.view.php">INICIO</a>
+            <a class="nav-link home" id='home' href="<?php echo URL;?>/views/home.view.php">INICIO</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="<?php echo URL;?>/views/answer.view.php">ENCUESTAS</a>
+            <a class="nav-link survey" id='survey' href="<?php echo URL;?>/views/answer.view.php">ENCUESTAS</a>
           </li>
         </ul>
       </div>
     </nav>
   </div>
 </header>
+<style>
+  .home, .survey {
+    color: white !important; 
+  }
+  .home:hover, .survey:hover{
+    
+    border-bottom: 4px solid gray; 
+  }
+</style>

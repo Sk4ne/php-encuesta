@@ -20,23 +20,46 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
   $title_question = $_POST['titulo_pregunta'];
   // $type_question = $_POST['type_question'];
   $answer_question = $_POST['respuesta_pregunta'];
+  $radio_question = $_POST['r1'];
+
+  // echo '<pre>';
+  //  print_r($_POST['tipoQ']);
+  // echo '</pre>';
+  // die();
+  
+  /* VERIFICAMOS EL TIPO DE PREGUNTA SI ES MULTIPLE PASAMOS $radio_question y si es ABIERTA pasamos $answer_question */
+  if ($_POST['tipoQ'] === 'PREGUNTA_MULTIPLE') {
+    $sql = $conexion->prepare(
+      'UPDATE encuestas SET tituloEncuesta = :titulo, tituloPregunta = :titulo_pregunta,respuestaPregunta = :respuesta_pregunta WHERE idEncuesta = :id' 
+    );
+  
+    $sql->execute(array(
+      ':id' => $id_encuesta,
+      ':titulo' => $title_survey,
+      ':titulo_pregunta' => $title_question,
+      ':respuesta_pregunta' => $radio_question
+    ));
+  
+    header('Location: ../views/answer.view.php');
+    
+  } else {
+    $sql = $conexion->prepare(
+      'UPDATE encuestas SET tituloEncuesta = :titulo, tituloPregunta = :titulo_pregunta,respuestaPregunta = :respuesta_pregunta WHERE idEncuesta = :id' 
+    );
+  
+    $sql->execute(array(
+      ':id' => $id_encuesta,
+      ':titulo' => $title_survey,
+      ':titulo_pregunta' => $title_question,
+      ':respuesta_pregunta' => $answer_question
+    ));
+  
+    header('Location: ../views/answer.view.php');
+    
+  }
+  /* </VERIFICAMOS EL TIPO DE PREGUNTA SI ES MULTIPLE PASAMOS $radio_question y si es ABIERTA pasamos $answer_question */
 
 
-
-  $sql = $conexion->prepare(
-    'UPDATE encuestas SET tituloEncuesta = :titulo, tituloPregunta = :titulo_pregunta,respuestaPregunta = :respuesta_pregunta WHERE idEncuesta = :id' 
-  );
-
-  $sql->execute(array(
-    ':id' => $id_encuesta,
-    ':titulo' => $title_survey,
-    // ':descripcion' => $description,
-    ':titulo_pregunta' => $title_question,
-    // ':tipo_pregunta' => $type_question,
-    ':respuesta_pregunta' => $answer_question
-  ));
-
-  header('Location: ../views/answer.view.php');
 }else{
   $id_encuesta = $_GET['id'];
   $id_encuesta = (int)$id_encuesta;

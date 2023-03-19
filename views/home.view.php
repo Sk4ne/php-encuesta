@@ -15,7 +15,18 @@
     $title_question = $_POST['title_question'];
     $type_question = $_POST['type_question'];
     $answer_question = isset($_POST['answer_question']) ? $_POST['answer_question']: "";
-    print_r($answer_question);
+    /* OBTENER LA REFERENCIA A CADA UNA DE LA PREGUNTAS MULTIPLES */
+    $p_uno = isset($_POST['input_radio']) ? $_POST['input_radio'] : "";
+    // $p_dos = isset($_POST['input_radioB']) ? $_POST['input_radioB'] : "";
+    $allMultiples  = [$p_uno,$p_dos];
+    $preguntas = [];
+     /**
+      * p_uno : PRIMER PREGUNTA MULTIPLE
+      * p_dos : SEGUNDA PREGUNTA MULTIPLE
+      */
+    /* </OBTENER LA REFERENCIA A CADA UNA DE LA PREGUNTAS MULTIPLES */
+    $respuesta_multiple = isset($_POST['input_radio']) ? $_POST['input_radio'] : "";
+
     if (empty($title_survey)) {
       $error.= ' POR FAVOR INGRESE EL TITULO DE LA ENCUESTA <br/>';
     } 
@@ -30,28 +41,55 @@
     };
 
     $allTitles = [];
-
     if(empty($error)){
       function codAleatorio($length = 5) {
         return substr(str_shuffle(str_repeat($x='0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ', ceil($length/strlen($x)) )),1,$length);
       }
       $codigo_referencia  = codAleatorio();
       for ($i=0; $i <count($title_question); $i++) { 
-        $sql = $conexion->prepare('INSERT INTO encuestas VALUES(NULL,:title_survey,:description,:title_question,:type_question,:answer_question,:codigo_referencia,CURRENT_TIMESTAMP)');
-          $sql->execute(array(
-            ':title_survey'=> $title_survey,
-            ':description'=> $description,
-            ':title_question'=> $title_question[$i],
-            ':type_question'=> $type_question[$i],
-            ':codigo_referencia'=>$codigo_referencia,
-            ':answer_question'=> $answer_question[$i]
-          ));
-          $ruta = URL;
-          header("Location: $ruta/views/answer.view.php");
+        /* New  */
+        if ($type_question[$i] == 'PREGUNTA_MULTIPLE') {
+          $sql = $conexion->prepare('INSERT INTO encuestas VALUES(NULL,:title_survey,:description,:title_question,:type_question,:answer_multiple,:codigo_referencia,CURRENT_TIMESTAMP)');
+           for ($x=0; $x<count($allMultiples); $x++) { 
+              array_push($preguntas,$allMultiples[$x]);
+            } 
+           $sql->execute(array(
+              ':title_survey'=> $title_survey,
+              ':description'=> $description,
+              ':title_question'=> $title_question[$i],
+              ':type_question'=> $type_question[$i],
+              ':codigo_referencia'=>$codigo_referencia,
+              // ':answer_multiple'=> $respuesta_multiple[$i]
+              // ':answer_multiple'=> $preguntas[$i]
+              ':answer_multiple'=> $p_uno[$i]
+            ));
+            $ruta = URL;
+            header("Location: $ruta/views/answer.view.php");
+        }else{
+            // die('OPCION 2');
+            $sql = $conexion->prepare('INSERT INTO encuestas VALUES(NULL,:title_survey,:description,:title_question,:type_question,:answer_question,:codigo_referencia,CURRENT_TIMESTAMP)');
+            $sql->execute(array(
+              ':title_survey'=> $title_survey,
+              ':description'=> $description,
+              ':title_question'=> $title_question[$i],
+              ':type_question'=> $type_question[$i],
+              ':codigo_referencia'=>$codigo_referencia,
+              ':answer_question'=> $answer_question[$i]
+            ));
+            $ruta = URL;
+            header("Location: $ruta/views/answer.view.php");
+        }
+        /* </New  */
       }
     }
   }
+  $contador; 
   $type_answer = array('Choose','PREGUNTA_MULTIPLE','PREGUNTA_ABIERTA');
+  /* $arrayRespuestas = array(
+    "SI" => "S",
+    "NO" => "N",
+    "UNPOCO" => "P"
+  ); */
 ?>
 
   <div class="container">
@@ -71,7 +109,7 @@
           <!-- SUB - FORM -->
           <div class="row">
             <div class="col">
-              <input type="text" name="title_question[]" placeholder="Titulo Pregunta" class="form-control" autocomplete="off" id='titleQuestion'>
+              <input type="text" name="title_question[]" placeholder="TITULO PREGUNTA" class="form-control" autocomplete="off" id='titleQuestion'>
             </div>
             <div class="col">
               <select name="type_question[]" class="select_option form-control"  id='answer_option' onchange='showHide()'>
@@ -87,19 +125,22 @@
           </div>  
 
           <!-- EN ESTA SECCION VA LAS PREGUNTAS OPCION MULTIPLE -->
-           <div class="form-check">
-             <input type="radio" class="form-check-input" name='inputRadio' value="1">
-             <label for="" class="form-check-label">RTA A</label>
-            </div> 
+          <div id='radios'>
             <div class="form-check">
-             <input type="radio" class="form-check-input" name='inputRadio' value="2">
-             <label for="" class="form-check-label">RTA B</label>
-            </div>
-            <div class="form-check">
-             <input type="radio" class="form-check-input" name='inputRadio' value="3">
-             <label for="" class="form-check-label">RTA C</label>
-            </div>       
+              <input type="radio" class="form-check-input " name='input_radio[]' id='radioButton' value="SI" >
+              <label for="" class="form-check-label" contenteditable='true'>SI</label>
+             </div> 
+             <div class="form-check">
+              <input type="radio" class="form-check-input" name='input_radio[]' id='radioButton' value="NO" >
+              <label for="" class="form-check-label" contenteditable='true'>NO</label>
+             </div>
+             <div class="form-check">
+              <input type="radio" class="form-check-input" name='input_radio[]' id='radioButton' value="UNPOCO" >
+              <label for="" class="form-check-label" contenteditable='true'>UN POCO</label>
+             </div>       
+          </div>
           <!-- </EN ESTA SECCION VA LAS PREGUNTAS OPCION MULTIPLE -->
+
            <!-- ESTE DIV CONTIENE LOS ELEMENTOS HTML CREADOS DINAMICAMENTE -->
            <div class="form-group" id='fatherContainer'></div>
          
