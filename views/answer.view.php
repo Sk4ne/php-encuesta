@@ -55,6 +55,12 @@
                 </h4>
               </div>
               <p class="card-text"><?php echo $dat['respuestaPregunta']?></p>
+              <!-- <php 
+                echo '<pre>';
+                  print_r($dat);
+                echo '</pre>';
+              
+              ?> -->
             <?php endforeach;?>
            </div>
          </div>

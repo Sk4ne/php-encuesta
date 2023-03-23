@@ -16,16 +16,7 @@
     $type_question = $_POST['type_question'];
     $answer_question = isset($_POST['answer_question']) ? $_POST['answer_question']: "";
     /* OBTENER LA REFERENCIA A CADA UNA DE LA PREGUNTAS MULTIPLES */
-    $p_uno = isset($_POST['input_radio']) ? $_POST['input_radio'] : "";
-    // $p_dos = isset($_POST['input_radioB']) ? $_POST['input_radioB'] : "";
-    $allMultiples  = [$p_uno,$p_dos];
-    $preguntas = [];
-     /**
-      * p_uno : PRIMER PREGUNTA MULTIPLE
-      * p_dos : SEGUNDA PREGUNTA MULTIPLE
-      */
-    /* </OBTENER LA REFERENCIA A CADA UNA DE LA PREGUNTAS MULTIPLES */
-    $respuesta_multiple = isset($_POST['input_radio']) ? $_POST['input_radio'] : "";
+    $all_radios= isset($_POST['input_radio']) ? $_POST['input_radio'] : "";
 
     if (empty($title_survey)) {
       $error.= ' POR FAVOR INGRESE EL TITULO DE LA ENCUESTA <br/>';
@@ -46,27 +37,26 @@
         return substr(str_shuffle(str_repeat($x='0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ', ceil($length/strlen($x)) )),1,$length);
       }
       $codigo_referencia  = codAleatorio();
-      for ($i=0; $i <count($title_question); $i++) { 
+      for ($i=0; $i <count($title_question); $i++) {
         /* New  */
+        // $data = array_map(null, $all_radios);
+        // print_r($data[0]);
+        // die();
         if ($type_question[$i] == 'PREGUNTA_MULTIPLE') {
+
           $sql = $conexion->prepare('INSERT INTO encuestas VALUES(NULL,:title_survey,:description,:title_question,:type_question,:answer_multiple,:codigo_referencia,CURRENT_TIMESTAMP)');
-           for ($x=0; $x<count($allMultiples); $x++) { 
-              array_push($preguntas,$allMultiples[$x]);
-            } 
-           $sql->execute(array(
-              ':title_survey'=> $title_survey,
-              ':description'=> $description,
-              ':title_question'=> $title_question[$i],
-              ':type_question'=> $type_question[$i],
-              ':codigo_referencia'=>$codigo_referencia,
-              // ':answer_multiple'=> $respuesta_multiple[$i]
-              // ':answer_multiple'=> $preguntas[$i]
-              ':answer_multiple'=> $p_uno[$i]
-            ));
-            $ruta = URL;
-            header("Location: $ruta/views/answer.view.php");
+          $sql->execute(array(
+             ':title_survey'=> $title_survey,
+             ':description'=> $description,
+             ':title_question'=> $title_question[$i],
+             ':type_question'=> $type_question[$i],
+             ':codigo_referencia'=>$codigo_referencia,
+             ':answer_multiple'=> $all_radios[$i]
+           ));
+           $ruta = URL;
+           header("Location: $ruta/views/answer.view.php");
         }else{
-            // die('OPCION 2');
+
             $sql = $conexion->prepare('INSERT INTO encuestas VALUES(NULL,:title_survey,:description,:title_question,:type_question,:answer_question,:codigo_referencia,CURRENT_TIMESTAMP)');
             $sql->execute(array(
               ':title_survey'=> $title_survey,
@@ -79,8 +69,7 @@
             $ruta = URL;
             header("Location: $ruta/views/answer.view.php");
         }
-        /* </New  */
-      }
+      } /* END FOR  */
     }
   }
   $contador; 
@@ -99,17 +88,18 @@
       <div class="col-sm-12 col-md-6">
         <h1 class='text-center' id='generador'>Generador de encuestas</h1>
         <hr>
+        <!-- se agregaron los values por defectos para ahorrar tiempo en modo desarrollo -->
         <form action="<?php $_SERVER['PHP_SELF'];?>" method='POST'>
           <div class="form-group">
-             <input type="text" name='title' class='form-control' placeholder='Titulo' id='titleSurvey'>
+             <input type="text" name='title' class='form-control' placeholder='Titulo' id='titleSurvey' value='CSS'>
           </div>
           <div class="form-group">
-            <textarea name="description" rows="5" placeholder="Descripcion de la encuesta" class='form-control'></textarea>
+            <textarea name="description" rows="5" placeholder="Descripcion de la encuesta" class='form-control'>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Enim, quo?</textarea>
           </div>
           <!-- SUB - FORM -->
           <div class="row">
             <div class="col">
-              <input type="text" name="title_question[]" placeholder="TITULO PREGUNTA" class="form-control" autocomplete="off" id='titleQuestion'>
+              <input type="text" name="title_question[]" placeholder="TITULO PREGUNTA" class="form-control" autocomplete="off" id='titleQuestion' value='QUE PROYECTOS HAZ REALIZADO CON CSS?'>
             </div>
             <div class="col">
               <select name="type_question[]" class="select_option form-control"  id='answer_option' onchange='showHide()'>
@@ -151,18 +141,26 @@
             </div>
           <?php endif ?>
 
-          <button type='submit' class='mt-4 btn btn-outline-secondary' name='submit' id='button_submit' >Guardar</button>
+          <button type='submit' class='mt-4 btn btn-outline-secondary' name='submit' id='button_submit'>Guardar</button>
 
           <br><br><br><br>
         </form>
       </div>
       <div class="col-sm-12 col-md-3">
-      <!-- <br><br><br><br><br><br><br><br><br><br><br><br> -->
-        <button class="btn btn-outline-secondary" id='createElements'>+</button>
+        
+      <!-- BOTON CREAR PREGUNTAS -->
+      <button class="btn btn-outline-secondary" id='createElements'>+</button>
       </div>
     </div> <!-- </PRIMER FILA -->
   </div>
+  <!-- ocultar todas las opciones de respuesta por default -->
+  <script src='<?php echo URL.'/js/hideFirstElement.js'?>'></script>
+  <!-- </ocultar todas las opciones de respuesta por default -->
   <script src='<?php echo URL.'/js/showHide.js'?>'></script>
+  <!-- Mostrar ocultar elementos despues de ser creados -->
+  <script src='<?= URL.'/js/showHideElement.js'?>'></script>
+  <!-- </Mostrar ocultar elementos despues de ser creados -->
+
  <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous"></script>
 </body>

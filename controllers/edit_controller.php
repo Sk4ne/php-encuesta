@@ -19,30 +19,49 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
   // $description = $_POST['descripcion_encuesta'];
   $title_question = $_POST['titulo_pregunta'];
   // $type_question = $_POST['type_question'];
-  $answer_question = $_POST['respuesta_pregunta'];
-  $radio_question = $_POST['r1'];
+
+  // $answer_question = $_POST['respuesta_pregunta'];   
+  // $radio_question = $_POST['r1'];  DATA ORIGINAL
+  
+  // $answer_question = $_POST['respuesta_pregunta'];   
+  // $radio_question = $_POST['r1']; 
 
   // echo '<pre>';
-  //  print_r($_POST['tipoQ']);
+  //   print_r($_POST['tipoQuestionOpen']);
   // echo '</pre>';
   // die();
-  
+
+  $conexion = conexion();
+  $sql = $conexion->prepare('SELECT * FROM encuestas WHERE idEncuesta = :id_encuesta');
+  $sql->execute(array(
+    ':id_encuesta'=>$id_encuesta
+  ));
+  $encuesta_id = $sql->fetchAll();
+  $tipo_pregunta = $encuesta_id[0]['tipoPregunta'];
+
   /* VERIFICAMOS EL TIPO DE PREGUNTA SI ES MULTIPLE PASAMOS $radio_question y si es ABIERTA pasamos $answer_question */
-  if ($_POST['tipoQ'] === 'PREGUNTA_MULTIPLE') {
+  // $radio_question = $_POST['input_radio']; 
+  // print_r($radio_question);
+  // die();
+  if ($tipo_pregunta === 'PREGUNTA_MULTIPLE') {
+    $radio_question = $_POST['input_radio'];
+    // print_r($radio_question);
+    // die(); 
     $sql = $conexion->prepare(
-      'UPDATE encuestas SET tituloEncuesta = :titulo, tituloPregunta = :titulo_pregunta,respuestaPregunta = :respuesta_pregunta WHERE idEncuesta = :id' 
+      'UPDATE encuestas SET tituloEncuesta = :titulo, tituloPregunta = :titulo_pregunta,respuestaPregunta = :respuesta_multiple WHERE idEncuesta = :id' 
     );
   
     $sql->execute(array(
       ':id' => $id_encuesta,
       ':titulo' => $title_survey,
       ':titulo_pregunta' => $title_question,
-      ':respuesta_pregunta' => $radio_question
+      ':respuesta_multiple' => $radio_question
     ));
   
     header('Location: ../views/answer.view.php');
     
   } else {
+    $answer_question = $_POST['respuesta_pregunta'];
     $sql = $conexion->prepare(
       'UPDATE encuestas SET tituloEncuesta = :titulo, tituloPregunta = :titulo_pregunta,respuestaPregunta = :respuesta_pregunta WHERE idEncuesta = :id' 
     );
